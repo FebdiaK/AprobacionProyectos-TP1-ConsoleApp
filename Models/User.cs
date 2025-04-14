@@ -26,5 +26,6 @@ namespace AprobacionProyectos.Models
 
         public ICollection<ProjectProposal> CreatedProposals { get; set; } = new List<ProjectProposal>();
         public ICollection<ProjectApprovalStep> ApprovalSteps { get; set; } = new List<ProjectApprovalStep>();
+
     }
 }
