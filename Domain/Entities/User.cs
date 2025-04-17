@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AprobacionProyectos.Models
+namespace AprobacionProyectos.Domain.Entities
 {
     public class User
     {

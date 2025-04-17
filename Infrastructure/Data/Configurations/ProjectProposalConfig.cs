@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AprobacionProyectos.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using AprobacionProyectos.Domain.Entities;
 
-namespace AprobacionProyectos.Data.Configurations
+namespace AprobacionProyectos.Infrastructure.Data.Configurations
 {
     public class ProjectProposalConfig : IEntityTypeConfiguration<ProjectProposal>
     {

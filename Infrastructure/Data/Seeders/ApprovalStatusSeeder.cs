@@ -1,7 +1,7 @@
-using AprobacionProyectos.Models;
+using AprobacionProyectos.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace AprobacionProyectos.Data.Seeders
+namespace AprobacionProyectos.Infrastructure.Data.Seeders
 {
     public static class ApprovalStatusSeeder
     {

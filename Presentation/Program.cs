@@ -1,5 +1,4 @@
-﻿
-namespace AprobacionProyectos
+﻿namespace AprobacionProyectos.Presentation
 {
     internal class Program
     {

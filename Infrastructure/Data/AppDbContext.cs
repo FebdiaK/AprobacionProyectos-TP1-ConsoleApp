@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AprobacionProyectos.Data.Configurations;
-using AprobacionProyectos.Data.Seeders;
-using AprobacionProyectos.Models;
+using AprobacionProyectos.Infrastructure.Data.Configurations;
+using AprobacionProyectos.Domain.Entities;
+using AprobacionProyectos.Infrastructure.Data.Seeders;
 using Microsoft.EntityFrameworkCore;
 
-namespace AprobacionProyectos.Data
+namespace AprobacionProyectos.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
@@ -30,11 +30,11 @@ namespace AprobacionProyectos.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuraciones Fluent (para evitar elimin en cascada)
+            // configuraciones Fluent (para evitar elimin en cascada)
             modelBuilder.ApplyConfiguration(new ProjectApprovalStepConfig());
             modelBuilder.ApplyConfiguration(new ProjectProposalConfig());
 
-            //Seeders
+            //seeders
             AreaSeeder.Seed(modelBuilder); 
             ProjectTypeSeeder.Seed(modelBuilder);
             ApprovalStatusSeeder.Seed(modelBuilder);

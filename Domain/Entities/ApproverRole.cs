@@ -5,17 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AprobacionProyectos.Models
+namespace AprobacionProyectos.Domain.Entities
 {
-    public class ApprovalStatus
+    public class ApproverRole
     {
         [Key]
-        public required int Id { get; set; }
+        public int Id { get; set; }
 
         [MaxLength(25)]
         public string Name { get; set; } = null!;
 
-        public ICollection<ProjectProposal> ProjectProposals { get; set; } = new List<ProjectProposal>();
+        public ICollection<User> Users { get; set; } = new List<User>();
+        public ICollection<ApprovalRule> ApprovalRules { get; set; } = new List<ApprovalRule>();
         public ICollection<ProjectApprovalStep> ProjectApprovalSteps { get; set; } = new List<ProjectApprovalStep>();
+
     }
 }
