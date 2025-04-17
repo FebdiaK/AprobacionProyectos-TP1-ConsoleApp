@@ -21,11 +21,13 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
             return await _context.ApproverRoles.ToListAsync();
         }
 
-        public async Task<Domain.Entities.ApproverRole?> GetByIdAsync(int id)
+        public async Task<Domain.Entities.ApproverRole> GetByIdAsync(int id)
         {
-            return await _context.ApproverRoles
+            var approverRole = await _context.ApproverRoles
                 .Include(r => r.Users)
                 .FirstOrDefaultAsync(r => r.Id == id);
+
+            return approverRole == null ? throw new InvalidOperationException($"No se encontró un ApproverRole con el ID {id}.") : approverRole;
         }
     }
 }

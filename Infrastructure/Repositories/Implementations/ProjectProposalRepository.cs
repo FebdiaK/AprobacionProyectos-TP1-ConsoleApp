@@ -22,11 +22,6 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
         public async Task<ProjectProposal?> GetByIdAsync(Guid id)
         {
             return await _context.ProjectProposals
-                .Include(p => p.Title)
-                .Include(p => p.Description)
-                .Include(p => p.EstimatedAmount)
-                .Include(p => p.EstimatedDuration)
-                .Include(p => p.CreatedAt)
                 .Include(p => p.Area)
                 .Include(p => p.Type)
                 .Include(p => p.Status)
@@ -35,10 +30,12 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+
         public async Task<List<ProjectProposal>> GetAllAsync()
         {
             return await _context.ProjectProposals
                 .Include(p => p.ApprovalSteps)
+                .ThenInclude(s => s.ApproverRole)
                 .ToListAsync();
         }
 
