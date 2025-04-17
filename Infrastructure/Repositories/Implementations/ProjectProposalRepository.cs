@@ -4,40 +4,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AprobacionProyectos.Domain.Entities;
+using AprobacionProyectos.Infrastructure.Data;
 using AprobacionProyectos.Infrastructure.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 {
-    internal class ProjectProposalRepository : IProjectProposalRepository
+    internal class ProjectProposalRepository : IProjectProposalRepository  
     {
-        Task IProjectProposalRepository.CreateAsync(ProjectProposal projectProposal)
+        private readonly AppDbContext _context;
+
+        public ProjectProposalRepository(AppDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        Task IProjectProposalRepository.DeleteAsync(int id)
+        public async Task<ProjectProposal?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.ProjectProposals
+                .Include(p => p.Title)
+                .Include(p => p.Description)
+                .Include(p => p.EstimatedAmount)
+                .Include(p => p.EstimatedDuration)
+                .Include(p => p.CreatedAt)
+                .Include(p => p.Area)
+                .Include(p => p.Type)
+                .Include(p => p.Status)
+                .Include(p => p.CreatedBy)
+                .Include(p => p.ApprovalSteps)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        Task<List<ProjectProposal>> IProjectProposalRepository.GetAllAsync()
+        public async Task<List<ProjectProposal>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.ProjectProposals
+                .Include(p => p.ApprovalSteps)
+                .ToListAsync();
         }
 
-        Task<ProjectProposal> IProjectProposalRepository.GetByIdAsync(Guid id)
+        public async Task CreateAsync(ProjectProposal proposal)
         {
-            throw new NotImplementedException();
+            await _context.ProjectProposals.AddAsync(proposal);
         }
 
-        Task IProjectProposalRepository.SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        Task IProjectProposalRepository.UpdateAsync(ProjectProposal projectProposal)
-        {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }
+

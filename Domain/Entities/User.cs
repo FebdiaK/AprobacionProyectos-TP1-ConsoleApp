@@ -19,10 +19,10 @@ namespace AprobacionProyectos.Domain.Entities
         [MaxLength(100)]
         public string Email { get; set; } = null!;
 
-        [ForeignKey(nameof(Role))]
+        [ForeignKey(nameof(ApproverRole))]
         [Column("Role")] // especifico el nombre de la columna en la base de datos
         public int RoleId { get; set; } // Foreign key del ApproverRole
-        public ApproverRole Role { get; set; } = null!;
+        public ApproverRole ApproverRole { get; set; } = null!; 
 
         public ICollection<ProjectProposal> CreatedProposals { get; set; } = new List<ProjectProposal>();
         public ICollection<ProjectApprovalStep> ApprovalSteps { get; set; } = new List<ProjectApprovalStep>();

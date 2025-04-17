@@ -10,16 +10,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 {
-    internal class ApprovalRuleRepository : IApprovalRuleRepository
+    internal class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
-        public ApprovalRuleRepository(AppDbContext context)
+
+        public UserRepository(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<List<ApprovalRule>> GetAllAsync()
+
+        public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.ApprovalRules.ToListAsync();
+            return await _context.Users.FindAsync(id);
+        }
+
+        public async Task<List<User>> GetAllAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task CreateAsync(User user)
+        {
+            await _context.Users.AddAsync(user);
         }
     }
 }

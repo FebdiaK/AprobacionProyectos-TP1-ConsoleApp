@@ -7,11 +7,11 @@ using AprobacionProyectos.Domain.Entities;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
 {
-    internal interface IProjectProposalRepository
+    internal interface IUserRepository
     {
-        Task<List<ProjectProposal>> GetAllAsync();
-        Task<ProjectProposal?> GetByIdAsync(Guid id);
-        Task CreateAsync(ProjectProposal projectProposal);
-        Task SaveChangesAsync();
+        Task<User?> GetByIdAsync(int id);
+        Task<List<User>> GetAllAsync();
+
+        Task CreateAsync(User user);
     }
 }

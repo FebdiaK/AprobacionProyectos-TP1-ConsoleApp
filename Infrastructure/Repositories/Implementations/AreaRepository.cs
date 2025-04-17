@@ -10,16 +10,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 {
-    internal class ApprovalRuleRepository : IApprovalRuleRepository
+    internal class AreaRepository : IAreaRepository
     {
         private readonly AppDbContext _context;
-        public ApprovalRuleRepository(AppDbContext context)
+
+        public AreaRepository(AppDbContext context)
         {
             _context = context;
         }
-        public async Task<List<ApprovalRule>> GetAllAsync()
-        {
-            return await _context.ApprovalRules.ToListAsync();
+
+        public async Task<List<Area>> GetAllAsync()
+        { 
+            return await _context.Areas.ToListAsync(); 
         }
     }
 }

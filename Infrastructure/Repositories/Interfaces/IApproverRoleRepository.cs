@@ -7,11 +7,9 @@ using AprobacionProyectos.Domain.Entities;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
 {
-    internal interface IProjectProposalRepository
+    internal interface IApproverRoleRepository
     {
-        Task<List<ProjectProposal>> GetAllAsync();
-        Task<ProjectProposal?> GetByIdAsync(Guid id);
-        Task CreateAsync(ProjectProposal projectProposal);
-        Task SaveChangesAsync();
+        Task<List<ApproverRole>> GetAllAsync();
+        Task<ApproverRole> GetByIdAsync(int id);
     }
 }

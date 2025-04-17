@@ -11,31 +11,31 @@ using Microsoft.EntityFrameworkCore;
 namespace AprobacionProyectos.Infrastructure.Data
 {
     public class AppDbContext : DbContext
-    {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    { 
+        
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=AprobacionProyectos;Trusted_Connection=True;");
         }
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Area> Areas { get; set; }
-        public DbSet<ApproverRole> ApproverRoles { get; set; }
-        public DbSet<ProjectType> ProjectTypes { get; set; }
         public DbSet<ApprovalRule> ApprovalRules { get; set; }
-        public DbSet<ProjectProposal> ProjectProposals { get; set; }
         public DbSet<ApprovalStatus> ApprovalStatuses { get; set; }
+        public DbSet<ApproverRole> ApproverRoles { get; set; }
+        public DbSet<Area> Areas { get; set; }
         public DbSet<ProjectApprovalStep> ProjectApprovalSteps { get; set; }
+        public DbSet<ProjectProposal> ProjectProposals { get; set; }
+        public DbSet<ProjectType> ProjectTypes { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // configuraciones Fluent (para evitar elimin en cascada)
+            // configuraciones Fluent (para evitar elimin en cascada)  
             modelBuilder.ApplyConfiguration(new ProjectApprovalStepConfig());
             modelBuilder.ApplyConfiguration(new ProjectProposalConfig());
 
-            //seeders
-            AreaSeeder.Seed(modelBuilder); 
+            // seeders  
+            AreaSeeder.Seed(modelBuilder);
             ProjectTypeSeeder.Seed(modelBuilder);
             ApprovalStatusSeeder.Seed(modelBuilder);
             ApproverRoleSeeder.Seed(modelBuilder);

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AprobacionProyectos.Application.Interfaces;
 using AprobacionProyectos.Domain.Entities;
 using AprobacionProyectos.Infrastructure.Repositories.Interfaces;
 
 namespace AprobacionProyectos.Application.Services
 {
-    internal class ProjectProposalService
+    internal class ProjectProposalService : IProjectProposalService  
     {
         private readonly IProjectProposalRepository _repository;
         private readonly IApprovalRuleRepository _ruleRepository;
@@ -76,7 +77,7 @@ namespace AprobacionProyectos.Application.Services
             step.DecisionDate = DateTime.UtcNow;
             step.Observations = observations;
 
-            var proposal = await _repository.GetByIdAsync(step.ProjectProposalId); 
+            var proposal = await _repository.GetByIdAsync(step.ProjectProposalId);
             if (proposal != null)
             {
                 if (!approve)
@@ -89,9 +90,24 @@ namespace AprobacionProyectos.Application.Services
             return true;
         }
 
-        public async Task<ProjectProposal?> GetProposalWithStatusAsync(Guid proposalId)
+
+        public async Task<List<ProjectProposal>> GetAllProjectProposalsAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
+
+        public async Task<ProjectProposal?> GetProjectProposalByIdAsync(Guid proposalId)
         {
             return await _repository.GetByIdAsync(proposalId);
+        }
+
+        public async Task<List<ProjectApprovalStep>> GetApprovalStepsByProposalIdAsync(Guid proposalId)
+        {
+            var proposal = await _repository.GetByIdAsync(proposalId);
+            if (proposal == null)
+                return new List<ProjectApprovalStep>();
+            return await _stepRepository.GetStepsByProposalIdAsync(proposal.Id);
+
         }
     }
 }
