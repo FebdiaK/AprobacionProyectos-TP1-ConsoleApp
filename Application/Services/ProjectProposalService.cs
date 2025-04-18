@@ -5,29 +5,33 @@ using System.Text;
 using System.Threading.Tasks;
 using AprobacionProyectos.Application.Interfaces;
 using AprobacionProyectos.Domain.Entities;
+using AprobacionProyectos.Infrastructure.Data;
 using AprobacionProyectos.Infrastructure.Repositories.Interfaces;
 
 namespace AprobacionProyectos.Application.Services
 {
-    internal class ProjectProposalService : IProjectProposalService  
+    internal class ProjectProposalService : IProjectProposalService
     {
         private readonly IProjectProposalRepository _repository;
         private readonly IApprovalRuleRepository _ruleRepository;
         private readonly IProjectApprovalStepRepository _stepRepository;
+        private readonly AppDbContext _context;
 
         public ProjectProposalService(
             IProjectProposalRepository repository,
             IApprovalRuleRepository ruleRepository,
-            IProjectApprovalStepRepository stepRepository)
+            IProjectApprovalStepRepository stepRepository,
+            AppDbContext context)
         {
             _repository = repository;
             _ruleRepository = ruleRepository;
             _stepRepository = stepRepository;
+            _context = context;
         }
 
         public async Task<Guid> CreateProjectProposalAsync(ProjectProposal proposal)
         {
-            proposal.Id = Guid.NewGuid();
+            //proposal.Id = Guid.NewGuid();
             proposal.CreatedAt = DateTime.UtcNow;
 
             await _repository.CreateAsync(proposal);
@@ -43,7 +47,16 @@ namespace AprobacionProyectos.Application.Services
                 .OrderBy(r => r.StepOrder)
                 .ToList();
 
-            foreach (var rule in applicableRules)
+            var selectedRules = applicableRules
+                .GroupBy(r => r.StepOrder)
+                .Select(g => g
+                    .OrderByDescending(r => (r.AreaId.HasValue ? 1 : 0) + (r.TypeId.HasValue ? 1 : 0))
+                    .First())
+                .OrderBy(r => r.StepOrder)
+                .ToList();
+
+
+            foreach (var rule in selectedRules)
             {
                 var step = new ProjectApprovalStep
                 {
@@ -58,7 +71,7 @@ namespace AprobacionProyectos.Application.Services
                 await _stepRepository.CreateAsync(step);
             }
 
-            await _repository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return proposal.Id;
         }
 
@@ -66,12 +79,12 @@ namespace AprobacionProyectos.Application.Services
         {
             var step = await _stepRepository.GetByIdAsync(stepId);
             if (step == null || step.UserId != userId)
-                return false; // Paso no encontrado o usuario inválido
+                return false; // paso no encontrado o usuario invalido
 
             var allSteps = await _stepRepository.GetStepsByProposalIdAsync(step.ProjectProposalId);
             var currentStepIndex = allSteps.FindIndex(s => s.Id == stepId);
             if (currentStepIndex == -1 || allSteps.Take(currentStepIndex).Any(s => s.StatusId == 1))
-                return false; // No es el paso actual (hay pasos anteriores pendientes)
+                return false; // no es el paso actual (hay pasos anteriores pendientes)
 
             step.StatusId = approve ? 2 : 3; // Aprobado = 2, Rechazado = 3
             step.DecisionDate = DateTime.UtcNow;
@@ -86,7 +99,7 @@ namespace AprobacionProyectos.Application.Services
                     proposal.StatusId = 2; // Aprobado
             }
 
-            await _repository.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             return true;
         }
 
@@ -108,6 +121,14 @@ namespace AprobacionProyectos.Application.Services
                 return new List<ProjectApprovalStep>();
             return await _stepRepository.GetStepsByProposalIdAsync(proposal.Id);
 
+        }
+
+        public async Task<ProjectProposal?> GetProjectProposalFullWithId(Guid id)
+        {
+            var proposal = await _repository.GetProjectProposalFullWithId(id);
+            if (proposal == null)
+                return null;
+            return proposal;
         }
     }
 }

@@ -12,7 +12,6 @@ namespace AprobacionProyectos.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     { 
-        
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
@@ -33,6 +32,7 @@ namespace AprobacionProyectos.Infrastructure.Data
             // configuraciones Fluent (para evitar elimin en cascada)  
             modelBuilder.ApplyConfiguration(new ProjectApprovalStepConfig());
             modelBuilder.ApplyConfiguration(new ProjectProposalConfig());
+            modelBuilder.ApplyConfiguration(new UserConfig());
 
             // seeders  
             AreaSeeder.Seed(modelBuilder);

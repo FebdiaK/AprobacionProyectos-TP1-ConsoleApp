@@ -7,10 +7,13 @@ using AprobacionProyectos.Domain.Entities;
 
 namespace AprobacionProyectos.Application.Interfaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
         Task<bool> IsUserInRoleAsync(int userId, int roleId);
         Task<bool> IsUserInAnyRoleAsync(int userId, List<ApproverRole> roleNames);        
         Task<int> CreateUser (string name, string email, ApproverRole role);
+
+        Task<User?> GetUserByIdAsync(int userId);
     }
+
 }

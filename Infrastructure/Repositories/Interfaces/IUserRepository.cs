@@ -11,7 +11,6 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
     {
         Task<User?> GetByIdAsync(int id);
         Task<List<User>> GetAllAsync();
-
         Task CreateAsync(User user);
     }
 }

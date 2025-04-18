@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 {
-    internal class ProjectProposalRepository : IProjectProposalRepository  
+    internal class ProjectProposalRepository : IProjectProposalRepository
     {
         private readonly AppDbContext _context;
 
@@ -30,7 +30,6 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-
         public async Task<List<ProjectProposal>> GetAllAsync()
         {
             return await _context.ProjectProposals
@@ -47,6 +46,20 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<ProjectProposal?> GetProjectProposalFullWithId(Guid id)
+        {
+            return await _context.ProjectProposals
+                .Include(p => p.Area)
+                .Include(p => p.Type)
+                .Include(p => p.Status)
+                .Include(p => p.CreatedBy)
+                .Include(p => p.ApprovalSteps)
+                    .ThenInclude(s => s.ApproverRole)
+                .Include(p => p.ApprovalSteps)
+                    .ThenInclude(s => s.Status)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }

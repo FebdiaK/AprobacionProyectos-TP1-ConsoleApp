@@ -21,7 +21,9 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                .Include(u => u.ApproverRole)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<List<User>> GetAllAsync()

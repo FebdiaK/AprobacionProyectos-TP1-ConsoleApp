@@ -61,8 +61,12 @@ namespace AprobacionProyectos.Application.Services
             };
             _userRepository.CreateAsync(user);
             return Task.FromResult(user.Id);
-        } 
+        }
 
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            return await _userRepository.GetByIdAsync(userId);
+        }
     }
     
 }
