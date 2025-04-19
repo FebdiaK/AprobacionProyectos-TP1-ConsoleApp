@@ -39,16 +39,19 @@ namespace AprobacionProyectos.Presentation
             services.AddScoped<IUserRepository, UserRepository>();
 
             //servicios de aplicacion
+            services.AddScoped<IApprovalStatusService, ApprovalStatusService>();
             services.AddScoped<IProjectProposalService, ProjectProposalService>();
             services.AddScoped<IUserService, UserService>();
 
             //acciones del menu
             services.AddScoped<ProposalBuilder>();
+            services.AddScoped<ProposalSummaryPrinter>();
             services.AddScoped<InputValidators>();
             services.AddScoped<CreateProposalAction>();
             services.AddScoped<ApproveStepAction>();
             services.AddScoped<ViewProposalStatusAction>();
             services.AddScoped<ConsoleMenuService>();
+
 
             //build y migracion de base de datos si es necesario
             ServiceProvider serviceProvider = services.BuildServiceProvider();

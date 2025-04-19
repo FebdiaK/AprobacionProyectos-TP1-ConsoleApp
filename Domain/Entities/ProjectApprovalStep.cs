@@ -19,10 +19,10 @@ namespace AprobacionProyectos.Domain.Entities
         public ProjectProposal ProjectProposal { get; set; } = null!; // relacion con ProjectProposal
 
 
-        [ForeignKey(nameof(User))]
+        [ForeignKey (nameof(ApproverUser))]
         [Column("ApproverUserId")] // especifico el nombre de la columna en la base de datos
-        public int? UserId { get; set; } // Foreign key del User, puede ser null
-        public User? User { get; set; } // relacion con User, puede ser null
+        public int? ApproverUserId { get; set; } // Foreign key del User, puede ser null 
+        public User? ApproverUser { get; set; } // relacion con User, puede ser null 
 
 
         [ForeignKey(nameof(ApproverRole))]
@@ -33,7 +33,7 @@ namespace AprobacionProyectos.Domain.Entities
 
         [ForeignKey(nameof(Status))]
         [Column("Status")] // especifico el nombre de la columna en la base de datos
-        public int StatusId { get; set; } // Foreign key del ApprovalStatus
+        public int StatusId { get; set; }  // Foreign key del ApprovalStatus
         public ApprovalStatus Status { get; set; } = null!; // relacion con ApprovalStatus
 
 

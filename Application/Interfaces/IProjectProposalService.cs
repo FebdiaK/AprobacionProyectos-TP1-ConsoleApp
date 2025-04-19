@@ -14,8 +14,7 @@ namespace AprobacionProyectos.Application.Interfaces
         Task<List<ProjectProposal>> GetAllProjectProposalsAsync();
         Task<bool> ApproveStepAsync(long stepId, int userId, bool approve, string? observations = null);
         Task<List<ProjectApprovalStep>> GetApprovalStepsByProposalIdAsync(Guid proposalId);
-        
         Task<ProjectProposal?> GetProjectProposalFullWithId(Guid id);
-
+        Task<User> GetApproverUserByStepIdAsync(int approverUserId);  
     }
 }

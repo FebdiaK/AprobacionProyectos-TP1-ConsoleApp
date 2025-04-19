@@ -10,5 +10,9 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
     internal interface IApprovalStatusRepository
     {
         Task<List<ApprovalStatus>> GetAllAsync();
+
+        Task<ApprovalStatus> GetByIdAsync(int id);
     }
+
+
 }

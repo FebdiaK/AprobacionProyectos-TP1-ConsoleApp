@@ -18,13 +18,15 @@ namespace AprobacionProyectos.Presentation.MenuActions
     {
         private readonly IProjectProposalService _projectProposalService; 
         private readonly IUserService _userService;
-        private readonly ProposalBuilder _proposalBuilder; 
+        private readonly ProposalBuilder _proposalBuilder;
+        private readonly ProposalSummaryPrinter _proposalSummaryPrinter;
 
-        public CreateProposalAction(IProjectProposalService service, IUserService userService, ProposalBuilder proposalBuilder)
+        public CreateProposalAction(IProjectProposalService service, IUserService userService, ProposalBuilder proposalBuilder, ProposalSummaryPrinter proposalSummaryPrinter)
         {
             _projectProposalService = service;
             _userService = userService;
             _proposalBuilder = proposalBuilder;
+            _proposalSummaryPrinter = proposalSummaryPrinter;
         }
 
         public async Task RunAsync()
@@ -35,9 +37,14 @@ namespace AprobacionProyectos.Presentation.MenuActions
                 Console.WriteLine("===== CREAR NUEVA PROPUESTA =====");
 
                 var propuesta = await _proposalBuilder.BuildAsync();
+               
 
-                var id = await _projectProposalService.CreateProjectProposalAsync(propuesta);
+                var id = await _projectProposalService.CreateProjectProposalAsync(propuesta); //esta linea de codio me genera una excepcion:  An error occurred while saving the entity changes. See the inner exception for details.
+
+                
                 var fullProposal = await _projectProposalService.GetProjectProposalFullWithId(id);
+
+                
 
                 if (fullProposal == null)
                 {
@@ -45,7 +52,7 @@ namespace AprobacionProyectos.Presentation.MenuActions
                     return;
                 }
 
-                ProposalSummaryPrinter.PrintData(fullProposal);
+                _proposalSummaryPrinter.PrintData(fullProposal);
                 Console.WriteLine($"\n - Propuesta creada con ID: {id}");
             }
             catch (OperationCanceledException)
@@ -59,6 +66,8 @@ namespace AprobacionProyectos.Presentation.MenuActions
             catch (Exception ex)
             {
                 Console.WriteLine($" Ocurrió un error: {ex.Message}");
+                Console.WriteLine(ex.InnerException.Message);
+                throw;
             }
             finally
             {

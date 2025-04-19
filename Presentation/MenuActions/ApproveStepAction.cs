@@ -90,16 +90,34 @@ namespace AprobacionProyectos.Presentation.MenuActions
                     Console.WriteLine($"Usuario con ID {userId} no encontrado en la base de datos.");
                     return;
                 }
-                if (user.ApproverRole == null)
+                if (user.ApproverRole != paso.ApproverRole)
                 {
                     Console.WriteLine($"El usuario con ID {userId} no tiene un rol asignado.");
                     return;
                 }
+
                 Console.WriteLine($"Usuario encontrado: {user.Name}, Rol: {user.ApproverRole.Name}");
 
-                if (paso.UserId != null && paso.UserId != userId)
+                /*if (paso.UserId != null && paso.UserId != userId)
                 {
                     Console.WriteLine(" Este paso no está asignado a usted.");
+                    return;
+                }*/
+
+                if (user.ApproverRole.Id != paso.ApproverRole.Id) 
+                {
+                    Console.WriteLine($" El usuario no tiene el rol necesario para aprobar este paso. Rol requerido: {paso.ApproverRole.Name}");
+                    return;
+                }
+
+                // valido que no haya pasos anteriores pendientes
+                var pasosAnteriores = propuesta.ApprovalSteps
+                    .Where(s => s.StepOrder < paso.StepOrder && s.StatusId == 1)
+                    .ToList();
+
+                if (pasosAnteriores.Count > 0)
+                {
+                    Console.WriteLine(" No se puede aprobar este paso porque hay pasos anteriores pendientes.");
                     return;
                 }
 
@@ -107,9 +125,20 @@ namespace AprobacionProyectos.Presentation.MenuActions
                 var aprobar = Console.ReadLine()?.Trim().ToUpper() == "S";
                 Console.Write(" Observaciones (opcional): ");
                 var obs = Console.ReadLine();
+                if (obs?.Trim() == "")
+                {
+                    obs = null;
+                }
 
                 var resultado = await _projectProposalService.ApproveStepAsync(paso.Id, userId, aprobar, obs);
-                Console.WriteLine(resultado ? " Paso procesado correctamente." : " Error en la aprobación.");
+                if (resultado == false)
+                {
+                    Console.WriteLine(" Ocurrio un error al aprobar el paso.");
+                }
+                if (resultado == true)
+                {
+                    Console.WriteLine(" Decision tomada con exito.");
+                }
             }
             catch (Exception ex)
             {

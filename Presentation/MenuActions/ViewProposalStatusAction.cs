@@ -12,9 +12,13 @@ namespace AprobacionProyectos.Presentation.MenuActions
     {
         private readonly IProjectProposalService _projectProposalService;
 
-        public ViewProposalStatusAction(IProjectProposalService projectProposalService)
+        private readonly ProposalSummaryPrinter _proposalSummaryPrinter;
+
+        public ViewProposalStatusAction(IProjectProposalService projectProposalService, ProposalSummaryPrinter proposalSummaryPrinter)
         {
             _projectProposalService = projectProposalService;
+            _proposalSummaryPrinter = proposalSummaryPrinter;
+
         }
 
         public async Task RunAsync()
@@ -27,7 +31,7 @@ namespace AprobacionProyectos.Presentation.MenuActions
 
                 var proyectos = await _projectProposalService.GetAllProjectProposalsAsync();
 
-                if (!proyectos.Any())
+                if (proyectos.Count() == 0) 
                 {
                     Console.WriteLine(" No hay proyectos actualmente.");
                     return;
@@ -71,12 +75,11 @@ namespace AprobacionProyectos.Presentation.MenuActions
                     return;
                 }
 
-                ProposalSummaryPrinter.PrintOnlyData(propuesta);
+                _proposalSummaryPrinter.PrintOnlyData(propuesta);
 
-                Console.WriteLine("\n Pasos actuales de Aprobación:");
+                await _proposalSummaryPrinter.PrintOnlyCurrentFlow(propuesta);
+            } 
 
-                ProposalSummaryPrinter.PrintOnlyCurrentFlow(propuesta);
-            }
             catch (Exception ex)
             {
                 Console.WriteLine($" Ocurrió un error: {ex.Message}");
