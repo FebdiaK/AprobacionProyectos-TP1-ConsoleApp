@@ -18,9 +18,9 @@ namespace AprobacionProyectos.Infrastructure.Data.Configurations
                    .HasForeignKey(p => p.ProjectProposalId) // Foreign key del ProjectProposal
                    .OnDelete(DeleteBehavior.Restrict); // cambiado a Restrict para evitar la eliminación en cascada
 
-            builder.HasOne(p => p.User)
+            builder.HasOne(p => p.ApproverUser)
                    .WithMany(u => u.ApprovalSteps)
-                   .HasForeignKey(p => p.UserId)
+                   .HasForeignKey(p => p.ApproverUserId) // Foreign key del User que aprueba
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.ApproverRole)

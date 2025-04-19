@@ -12,7 +12,7 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
 {
     internal class ApprovalStatusRepository : IApprovalStatusRepository
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _context; 
         public ApprovalStatusRepository(AppDbContext context)
         {
             _context = context;
@@ -20,6 +20,11 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
         public async Task<List<ApprovalStatus>> GetAllAsync()
         {
             return await _context.ApprovalStatuses.ToListAsync();
+        }
+
+        public async Task<ApprovalStatus> GetByIdAsync(int id)
+        {
+            return await _context.ApprovalStatuses.FindAsync(id); 
         }
     }
 }

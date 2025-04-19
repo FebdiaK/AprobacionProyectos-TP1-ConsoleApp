@@ -43,7 +43,8 @@ namespace AprobacionProyectos.Presentation.Helpers
             var monto = decimal.Parse(LeerEntrada(" Monto estimado (en USD): ", entrada => InputValidators.ValidarDecimalPositivo(entrada)));
             var duracion = int.Parse(LeerEntrada(" Duración estimada (días): ", entrada => InputValidators.ValidarEnteroPositivo(entrada)));
             var creadorId = await _inputValidators.LeerYValidarUsuarioAsync();
-            if(creadorId == null)
+           
+            if (creadorId == null)
             {
                 Console.WriteLine(" Se canceló la creacion del proyecto.");
                 return null;

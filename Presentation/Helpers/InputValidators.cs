@@ -38,7 +38,7 @@ namespace AprobacionProyectos.Presentation.Helpers
             
                 Console.WriteLine("Ingrese el ID del usuario (o '000' para cancelar):");
                 var entrada = Console.ReadLine();
-
+          
                 if (entrada == "000")
                 {
                     return null; // Indica que se canceló la operación
@@ -51,7 +51,7 @@ namespace AprobacionProyectos.Presentation.Helpers
                 }
 
                 try
-                {
+                {   
                     var usuario = await _userService.GetUserByIdAsync(_id);
 
                     if (usuario == null)

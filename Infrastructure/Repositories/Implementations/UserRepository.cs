@@ -19,10 +19,10 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
             _context = context;
         }
 
-        public async Task<User?> GetByIdAsync(int id)
+        public async Task<User> GetByIdAsync(int id) 
         {
             return await _context.Users
-                .Include(u => u.ApproverRole)
+                .Include(u => u.ApproverRole) 
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 

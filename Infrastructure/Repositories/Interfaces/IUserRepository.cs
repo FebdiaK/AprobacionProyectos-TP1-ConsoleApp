@@ -9,7 +9,7 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
 {
     internal interface IUserRepository
     {
-        Task<User?> GetByIdAsync(int id);
+        Task<User> GetByIdAsync(int id); 
         Task<List<User>> GetAllAsync();
         Task CreateAsync(User user);
     }
