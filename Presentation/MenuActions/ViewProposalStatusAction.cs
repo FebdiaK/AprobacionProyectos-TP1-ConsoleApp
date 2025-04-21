@@ -10,15 +10,12 @@ namespace AprobacionProyectos.Presentation.MenuActions
 {
     public class ViewProposalStatusAction
     {
-        private readonly IProjectProposalService _projectProposalService;
-
+        private readonly IProjectProposalQueryService _projectProposalQueryService;
         private readonly ProposalSummaryPrinter _proposalSummaryPrinter;
-
-        public ViewProposalStatusAction(IProjectProposalService projectProposalService, ProposalSummaryPrinter proposalSummaryPrinter)
+        public ViewProposalStatusAction( ProposalSummaryPrinter proposalSummaryPrinter, IProjectProposalQueryService projectProposalQueryService)
         {
-            _projectProposalService = projectProposalService;
             _proposalSummaryPrinter = proposalSummaryPrinter;
-
+            _projectProposalQueryService = projectProposalQueryService;
         }
 
         public async Task RunAsync()
@@ -29,51 +26,11 @@ namespace AprobacionProyectos.Presentation.MenuActions
 
                 Console.WriteLine("===== VER ESTADO DE UNA PROPUESTA =====");
 
-                var proyectos = await _projectProposalService.GetAllProjectProposalsAsync();
+                var proyectos = await _projectProposalQueryService.GetAllProjectProposalsAsync();
 
-                if (proyectos.Count() == 0) 
-                {
-                    Console.WriteLine(" No hay proyectos actualmente.");
-                    return;
-                }
-
-                Console.WriteLine(" Lista de propuestas de Proyectos: ");
-                var indexLookup = new Dictionary<int, Guid>();
-                int i = 1;
-
-                foreach (var p in proyectos)
-                {
-                    Console.WriteLine($"{i}-.  {p.Title}");
-                    indexLookup[i] = p.Id;
-                    i++;
-                }
-
-                Console.Write("\n Ingrese el indice de la propuesta para ver su estado: ");
-
-                int seleccion;
-                while (true)
-                {
-                    var input = Console.ReadLine();
-                    if (int.TryParse(input, out seleccion) && seleccion >= 1 && seleccion <= proyectos.Count)
-                    {
-                        break;
-                    }
-                    Console.WriteLine(" Selección no válida. Intente nuevamente o presione 'X' para salir al menú.");
-                    if (input?.Trim().ToUpper() == "X")
-                    {
-                        return;
-                    }
-                }
-
-                var id = indexLookup[seleccion];
-
-                var propuesta = await _projectProposalService.GetProjectProposalByIdAsync(id);
-
-                if (propuesta == null)
-                {
-                    Console.WriteLine(" Propuesta no encontrada.");
-                    return;
-                }
+                var propuesta = ProjectSelecionFromListHelper.SelectProjectFromList(proyectos); 
+                if (propuesta == null) 
+                    return ;
 
                 _proposalSummaryPrinter.PrintOnlyData(propuesta);
 

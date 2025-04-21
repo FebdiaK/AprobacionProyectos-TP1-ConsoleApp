@@ -16,15 +16,14 @@ namespace AprobacionProyectos.Presentation.MenuActions
 {
     public class CreateProposalAction
     {
-        private readonly IProjectProposalService _projectProposalService; 
-        private readonly IUserService _userService;
+        private readonly IProjectProposalCreatorService _creatorService;
+        private readonly IProjectProposalQueryService _queryService;
         private readonly ProposalBuilder _proposalBuilder;
         private readonly ProposalSummaryPrinter _proposalSummaryPrinter;
-
-        public CreateProposalAction(IProjectProposalService service, IUserService userService, ProposalBuilder proposalBuilder, ProposalSummaryPrinter proposalSummaryPrinter)
+        public CreateProposalAction(IProjectProposalCreatorService creatorService, IProjectProposalQueryService queryService, ProposalBuilder proposalBuilder, ProposalSummaryPrinter proposalSummaryPrinter)
         {
-            _projectProposalService = service;
-            _userService = userService;
+            _creatorService = creatorService;
+            _queryService = queryService;
             _proposalBuilder = proposalBuilder;
             _proposalSummaryPrinter = proposalSummaryPrinter;
         }
@@ -37,14 +36,10 @@ namespace AprobacionProyectos.Presentation.MenuActions
                 Console.WriteLine("===== CREAR NUEVA PROPUESTA =====");
 
                 var propuesta = await _proposalBuilder.BuildAsync();
-               
 
-                var id = await _projectProposalService.CreateProjectProposalAsync(propuesta); //esta linea de codio me genera una excepcion:  An error occurred while saving the entity changes. See the inner exception for details.
+                var id = await _creatorService.CreateProjectProposalAsync(propuesta); //esta linea de codio me genera una excepcion:  An error occurred while saving the entity changes. See the inner exception for details.
 
-                
-                var fullProposal = await _projectProposalService.GetProjectProposalFullWithId(id);
-
-                
+                var fullProposal = await _queryService.GetProjectProposalFullWithId(id);
 
                 if (fullProposal == null)
                 {

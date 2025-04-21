@@ -13,7 +13,6 @@ namespace AprobacionProyectos.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IApproverRoleRepository _approverRepository;
-
         public UserService(IUserRepository userRepository, IApproverRoleRepository approverRepository)
         {
             _userRepository = userRepository;
@@ -51,7 +50,7 @@ namespace AprobacionProyectos.Application.Services
             return roleNames.Any(role => role.Id == userRole.Id);
 
         }
-        public Task<int> CreateUser(string name, string email, ApproverRole role)
+        public async Task<int> CreateUser(string name, string email, ApproverRole role)
         {
             var user = new User
             {
@@ -59,14 +58,12 @@ namespace AprobacionProyectos.Application.Services
                 Email = email,
                 ApproverRole = role
             };
-            _userRepository.CreateAsync(user);
-            return Task.FromResult(user.Id);
+            await _userRepository.CreateAsync(user);
+            return user.Id;
         }
-
         public async Task<User?> GetUserByIdAsync(int userId)
         {
             return await _userRepository.GetByIdAsync(userId);
         }
     }
-    
 }

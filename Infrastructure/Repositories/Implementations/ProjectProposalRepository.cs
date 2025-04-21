@@ -33,9 +33,16 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
         public async Task<List<ProjectProposal>> GetAllAsync()
         {
             return await _context.ProjectProposals
-                .Include(p => p.ApprovalSteps)
+            .Include(p => p.Area)
+            .Include(p => p.Type)
+            .Include(p => p.Status)
+            .Include(p => p.CreatedBy)
+            .Include(p => p.ApprovalSteps)
                 .ThenInclude(s => s.ApproverRole)
-                .ToListAsync();
+            .Include(p => p.ApprovalSteps)
+                .ThenInclude(s => s.Status)
+            .ToListAsync();
+
         }
 
         public async Task CreateAsync(ProjectProposal proposal)
