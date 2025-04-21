@@ -14,58 +14,56 @@ using AprobacionProyectos.Application.Interfaces;
 using Microsoft.Extensions.Configuration;
 using AprobacionProyectos.Presentation.MenuActions;
 using AprobacionProyectos.Presentation.Helpers;
+using AprobacionProyectos.Presentation;
 
 
-namespace AprobacionProyectos.Presentation 
+IServiceCollection services = new ServiceCollection(); //configuro el contenedor de servicios
+
+//registro DbContext con Localdb 
+services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AprobacionProyectos;Trusted_Connection=True;TrustServerCertificate=True;"));
+
+//repositorios (interfaces e implementaciones)
+services.AddScoped<IApprovalRuleRepository, ApprovalRuleRepository>();
+services.AddScoped<IApprovalStatusRepository, ApprovalStatusRepository>();
+services.AddScoped<IApproverRoleRepository, ApproverRoleRepository>();
+services.AddScoped<IAreaRepository, AreaRepository>();
+services.AddScoped<IProjectApprovalStepRepository, ProjectApprovalStepRepository>();
+services.AddScoped<IProjectProposalRepository, ProjectProposalRepository>();
+services.AddScoped<IProjectTypeRepository, ProjectTypeRepository>();
+services.AddScoped<IUserRepository, UserRepository>();
+
+//servicios de aplicacion
+services.AddScoped<IApprovalStatusService, ApprovalStatusService>();
+services.AddScoped<IApprovalWorkflowService, ApprovalWorkflowService>();
+services.AddScoped<IAreaService, AreaService>();
+services.AddScoped<IProjectProposalCreatorService, ProjectProposalCreatorService>();
+services.AddScoped<IProjectProposalQueryService, ProjectProposalQueryService>();
+services.AddScoped<IProjectTypeService, ProjectTypeService>();
+services.AddScoped<IUserService, UserService>();
+
+//acciones del menu
+services.AddScoped<ApprovalConfirmationHelper>();
+services.AddScoped<InputValidators>();
+services.AddScoped<ProjectSelecionFromListHelper>();
+services.AddScoped<ProjectSelectionHelper>();
+services.AddScoped<ProposalBuilder>();
+services.AddScoped<ProposalSummaryPrinter>();
+services.AddScoped<UserValidationHelper>();
+services.AddScoped<ApproveStepAction>();
+services.AddScoped<CreateProposalAction>();
+services.AddScoped<ViewProposalStatusAction>();
+services.AddScoped<ConsoleMenuService>();
+
+//build y migracion de base de datos si es necesario
+ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+using (var scope = serviceProvider.CreateScope())
 {
-    class Program
-    {
-        static async Task Main(string[] args)
-        { 
-            IServiceCollection services = new ServiceCollection(); //configuro el contenedor de servicios
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate(); // aplico las migraciones automáticamente
+}
 
-            //registro DbContext con Localdb 
-            services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AprobacionProyectos;Trusted_Connection=True;TrustServerCertificate=True;"));
-
-            //repositorios (interfaces e implementaciones)
-            services.AddScoped<IApprovalRuleRepository, ApprovalRuleRepository>(); 
-            services.AddScoped<IApprovalStatusRepository, ApprovalStatusRepository>();
-            services.AddScoped<IApproverRoleRepository, ApproverRoleRepository>();
-            services.AddScoped<IAreaRepository, AreaRepository>();
-            services.AddScoped<IProjectApprovalStepRepository, ProjectApprovalStepRepository>();
-            services.AddScoped<IProjectProposalRepository, ProjectProposalRepository>();
-            services.AddScoped<IProjectTypeRepository, ProjectTypeRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-
-            //servicios de aplicacion
-            services.AddScoped<IApprovalStatusService, ApprovalStatusService>();
-            services.AddScoped<IProjectProposalService, ProjectProposalService>();
-            services.AddScoped<IUserService, UserService>();
-
-            //acciones del menu
-            services.AddScoped<ProposalBuilder>();
-            services.AddScoped<ProposalSummaryPrinter>();
-            services.AddScoped<InputValidators>();
-            services.AddScoped<CreateProposalAction>();
-            services.AddScoped<ApproveStepAction>();
-            services.AddScoped<ViewProposalStatusAction>();
-            services.AddScoped<ConsoleMenuService>();
-
-
-            //build y migracion de base de datos si es necesario
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                context.Database.Migrate(); // aplico las migraciones automáticamente
-            }
-
-            //ejectuo el menú principal
-            var menu = serviceProvider.GetRequiredService<ConsoleMenuService>();
-            await menu.RunAsync();
-
-        }
-    }
- }
+//ejectuo el menú principal
+var menu = serviceProvider.GetRequiredService<ConsoleMenuService>();
+await menu.RunAsync();

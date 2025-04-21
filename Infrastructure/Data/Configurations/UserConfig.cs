@@ -15,7 +15,7 @@ namespace AprobacionProyectos.Infrastructure.Data.Configurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder
-                .HasOne(u => u.ApproverRole)
+                .HasOne(u => u.ApproverRole) // defino relación con ApproverRole, porque un user puede tener un role y un role puede tener muchos users;
                 .WithMany(r => r.Users)
                 .HasForeignKey(u => u.RoleId);
         }

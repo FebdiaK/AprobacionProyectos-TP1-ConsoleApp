@@ -35,12 +35,12 @@ namespace AprobacionProyectos.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new UserConfig());
 
             // seeders  
-            AreaSeeder.Seed(modelBuilder);
-            ProjectTypeSeeder.Seed(modelBuilder);
+            ApprovalRuleSeeder.Seed(modelBuilder);
             ApprovalStatusSeeder.Seed(modelBuilder);
             ApproverRoleSeeder.Seed(modelBuilder);
+            AreaSeeder.Seed(modelBuilder);
+            ProjectTypeSeeder.Seed(modelBuilder);
             UserSeeder.Seed(modelBuilder);
-            ApprovalRuleSeeder.Seed(modelBuilder);
         }
     }
 }

@@ -13,14 +13,14 @@ namespace AprobacionProyectos.Infrastructure.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<ProjectApprovalStep> builder)
         {
-            builder.HasOne(p => p.ProjectProposal) // relacion con ProjectProposal
+            builder.HasOne(p => p.ProjectProposal) // relacion con ProjectProposal, 
                    .WithMany(p => p.ApprovalSteps) // relacion inversa con ProjectProposal
-                   .HasForeignKey(p => p.ProjectProposalId) // Foreign key del ProjectProposal
+                   .HasForeignKey(p => p.ProjectProposalId) // foreign key del ProjectProposal
                    .OnDelete(DeleteBehavior.Restrict); // cambiado a Restrict para evitar la eliminación en cascada
 
             builder.HasOne(p => p.ApproverUser)
                    .WithMany(u => u.ApprovalSteps)
-                   .HasForeignKey(p => p.ApproverUserId) // Foreign key del User que aprueba
+                   .HasForeignKey(p => p.ApproverUserId) // foreign key del User que aprueba
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasOne(p => p.ApproverRole)

@@ -5,20 +5,21 @@ using System.Text;
 using System.Threading.Tasks;
 using AprobacionProyectos.Application.Interfaces;
 using AprobacionProyectos.Domain.Entities;
+using AprobacionProyectos.Presentation.Helpers;
 
 namespace AprobacionProyectos.Presentation.MenuActions
 {
     public class ApproveStepAction
     {
-        private readonly IProjectProposalService _projectProposalService;
+        private readonly IProjectProposalQueryService _projectProposalQueryService;
+        private readonly IApprovalWorkflowService _approvalWorkflowService;
         private readonly IUserService _userService;
-
-        public ApproveStepAction(IProjectProposalService projectProposalService, IUserService userService)
+        public ApproveStepAction(IUserService userService, IProjectProposalQueryService projectProposalQueryService, IApprovalWorkflowService approvalWorkflowService)
         {
-            _projectProposalService = projectProposalService;
             _userService = userService;
+            _projectProposalQueryService = projectProposalQueryService;
+            _approvalWorkflowService = approvalWorkflowService;
         }
-
         public async Task RunAsync()
         {
             try
@@ -27,53 +28,10 @@ namespace AprobacionProyectos.Presentation.MenuActions
                 Console.Clear();
                 Console.WriteLine("===== APROBAR / RECHAZAR PASO =====");
 
-                Console.WriteLine(" Buscando proyectos pendientes de aprobación...");
-                var proyectos = await _projectProposalService.GetAllProjectProposalsAsync();
-                var pendientes = proyectos.Where(p => p.StatusId == 1).ToList();
-
-                if (pendientes.Count == 0)
-                {
-                    Console.WriteLine(" No hay proyectos pendientes.");
+                var propuestas = await _projectProposalQueryService.GetAllProjectProposalsAsync();
+                var propuesta = ProjectSelectionHelper.SelectProposal(propuestas);
+                if (propuesta == null)
                     return;
-                }
-
-                Console.WriteLine("\n Proyectos pendientes: ");
-                var indexLookup = new Dictionary<int, Guid>();
-                int i = 1;
-
-                foreach (var p in pendientes)
-                {
-                    var pasoActual = p.ApprovalSteps.OrderBy(s => s.StepOrder).FirstOrDefault(s => s.StatusId == 1);
-                    Console.WriteLine($"{i}. {p.Title} | Paso actual: {pasoActual?.ApproverRole.Name} (Orden #{pasoActual?.StepOrder})");
-                    indexLookup[i] = p.Id;
-                    i++;
-                }
-
-                Console.Write("Seleccione el número de proyecto: ");
-                int seleccion;
-                while (true)
-                {
-                    var input = Console.ReadLine();
-                    if (int.TryParse(input, out seleccion) && seleccion >= 1 && seleccion <= pendientes.Count)
-                    {
-                        break;
-                    }
-                    Console.WriteLine(" Selección no válida. Intente nuevamente o presione 'X' para salir al menú.");
-                    if (input?.Trim().ToUpper() == "X")
-                    {
-                        return;
-                    }
-                }
-
-                var id = indexLookup[seleccion];
-
-                var propuesta = await _projectProposalService.GetProjectProposalByIdAsync(id);
-
-                if (propuesta == null || propuesta.StatusId != 1)
-                {
-                    Console.WriteLine(" Propuesta no encontrada o ya procesada.");
-                    return;
-                }
 
                 var paso = propuesta.ApprovalSteps.OrderBy(s => s.StepOrder).FirstOrDefault(s => s.StatusId == 1);
                 if (paso == null)
@@ -82,63 +40,29 @@ namespace AprobacionProyectos.Presentation.MenuActions
                     return;
                 }
 
-                Console.Write($" Ingrese su ID de usuario (para rol '{paso.ApproverRole.Name}'): ");
-                var userId = int.Parse(Console.ReadLine()!);
-                var user = await _userService.GetUserByIdAsync(userId);
-                if (user == null)
-                {
-                    Console.WriteLine($"Usuario con ID {userId} no encontrado en la base de datos.");
-                    return;
-                }
-                if (user.ApproverRole != paso.ApproverRole)
-                {
-                    Console.WriteLine($"El usuario con ID {userId} no tiene un rol asignado.");
-                    return;
-                }
-
-                Console.WriteLine($"Usuario encontrado: {user.Name}, Rol: {user.ApproverRole.Name}");
-
-                /*if (paso.UserId != null && paso.UserId != userId)
-                {
-                    Console.WriteLine(" Este paso no está asignado a usted.");
-                    return;
-                }*/
-
-                if (user.ApproverRole.Id != paso.ApproverRole.Id) 
-                {
-                    Console.WriteLine($" El usuario no tiene el rol necesario para aprobar este paso. Rol requerido: {paso.ApproverRole.Name}");
-                    return;
-                }
-
-                // valido que no haya pasos anteriores pendientes
-                var pasosAnteriores = propuesta.ApprovalSteps
+                var pasosAnterioresPendientes = propuesta.ApprovalSteps
                     .Where(s => s.StepOrder < paso.StepOrder && s.StatusId == 1)
                     .ToList();
 
-                if (pasosAnteriores.Count > 0)
+                if (pasosAnterioresPendientes.Count > 0)
                 {
-                    Console.WriteLine(" No se puede aprobar este paso porque hay pasos anteriores pendientes.");
+                    Console.WriteLine("No se puede aprobar este paso porque hay pasos anteriores pendientes.");
                     return;
                 }
 
-                Console.Write(" ¿Desea aprobar el paso? (S/N): ");
-                var aprobar = Console.ReadLine()?.Trim().ToUpper() == "S";
-                Console.Write(" Observaciones (opcional): ");
-                var obs = Console.ReadLine();
-                if (obs?.Trim() == "")
-                {
-                    obs = null;
-                }
+                var user = await UserValidationHelper.GetValidUserAsync(_userService, paso);
+                if (user == null)
+                    return;
+                
+                var decision = ApprovalConfirmationHelper.GetDecision();  
+                if (decision == null)
+                    return;
 
-                var resultado = await _projectProposalService.ApproveStepAsync(paso.Id, userId, aprobar, obs);
-                if (resultado == false)
-                {
-                    Console.WriteLine(" Ocurrio un error al aprobar el paso.");
-                }
-                if (resultado == true)
-                {
-                    Console.WriteLine(" Decision tomada con exito.");
-                }
+                var(aprobado, observaciones) = decision.Value.aprobado ? (true, decision.Value.observaciones) : (false, decision.Value.observaciones);
+
+                var resultado = await _approvalWorkflowService.ApproveStepAsync(paso.Id, user.Id, aprobado, observaciones);
+
+                Console.WriteLine(resultado ? "\n- Decisión tomada con éxito." : " Ocurrió un error al aprobar el paso.");
             }
             catch (Exception ex)
             {
@@ -146,10 +70,9 @@ namespace AprobacionProyectos.Presentation.MenuActions
             }
             finally
             {
-                Console.WriteLine("\n Presione cualquier tecla para regresar al menú...");
+                Console.WriteLine("\nPresione cualquier tecla para regresar al menú...");
                 Console.ReadKey();
             }
-
         }
     }
 }

@@ -16,7 +16,7 @@ namespace AprobacionProyectos.Presentation.Helpers
             _userService = userService;
         }
 
-        public static bool ValidarRango(string entrada, int min, int max)
+        public static bool ValidarRango(string entrada, int min, int max) 
         {
             return int.TryParse(entrada, out var val) && val >= min && val <= max;
         }
@@ -36,10 +36,10 @@ namespace AprobacionProyectos.Presentation.Helpers
             while (true)
             {
             
-                Console.WriteLine("Ingrese el ID del usuario (o '000' para cancelar):");
+                Console.WriteLine("Ingrese el ID del usuario:");
                 var entrada = Console.ReadLine();
           
-                if (entrada == "000")
+                if (entrada?.ToLower() == "x")
                 {
                     return null; // Indica que se canceló la operación
                 }

@@ -7,7 +7,7 @@ using AprobacionProyectos.Domain.Entities;
 
 namespace AprobacionProyectos.Infrastructure.Repositories.Interfaces
 {
-    internal interface IProjectProposalRepository
+    public interface IProjectProposalRepository
     {
         Task<List<ProjectProposal>> GetAllAsync();
         Task<ProjectProposal?> GetByIdAsync(Guid id);

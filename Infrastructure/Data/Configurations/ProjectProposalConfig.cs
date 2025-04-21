@@ -15,8 +15,8 @@ namespace AprobacionProyectos.Infrastructure.Data.Configurations
         {
             builder.HasOne(p => p.CreatedBy) // relacion con el creador del proyecto (un user)
                    .WithMany(u => u.CreatedProposals) // relacion inversa con el usuario
-                   .HasForeignKey(p => p.CreatedById) // Foreign key del User
-                   .OnDelete(DeleteBehavior.Restrict); // Cambiado a Restrict para evitar la eliminacion en cascada
+                   .HasForeignKey(p => p.CreatedById) // foreign key del User
+                   .OnDelete(DeleteBehavior.Restrict); // cambiado a Restrict para evitar la eliminacion en cascada
 
             builder.HasOne(p => p.Area)
                    .WithMany(a => a.ProjectProposals)
@@ -34,7 +34,7 @@ namespace AprobacionProyectos.Infrastructure.Data.Configurations
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(p => p.EstimatedAmount)
-                     .HasColumnType("decimal(18,2)"); // Definido como decimal con 18 digitos en total y 2 decimales
+                     .HasColumnType("decimal(18,2)"); // definido como decimal con 18 digitos en total y 2 decimales
 
         }
     }
