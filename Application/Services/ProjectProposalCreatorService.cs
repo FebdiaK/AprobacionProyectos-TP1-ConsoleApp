@@ -34,7 +34,7 @@ namespace AprobacionProyectos.Application.Services
         }
         public async Task<Guid> CreateProjectProposalAsync(ProjectProposal proposal)
         {
-            //proposal.Id = Guid.NewGuid();
+
             proposal.CreatedAt = DateTime.UtcNow;
 
             await _repository.CreateAsync(proposal);
@@ -43,19 +43,19 @@ namespace AprobacionProyectos.Application.Services
 
             var applicableRules = rules
                 .Where(r =>
-                    (r.AreaId == null || r.AreaId == proposal.AreaId) &&
-                    (r.TypeId == null || r.TypeId == proposal.TypeId) &&
-                    r.MinAmount <= proposal.EstimatedAmount &&
+                    (r.AreaId == null || r.AreaId == proposal.AreaId) && //si el area es null, sea cual sea el valor del area de la propuesta, entra siempre (si entra en el rango del dinero)
+                    (r.TypeId == null || r.TypeId == proposal.TypeId) && //igual que el anterior, pero para el tipo
+                    (r.MinAmount <= proposal.EstimatedAmount) &&
                     (r.MaxAmount == 0 || r.MaxAmount >= proposal.EstimatedAmount)) //si maxAmount es 0, entonces es infinito, por ende entra siempre y cuando que el monto supere o sea igual al MinAmount
                 .OrderBy(r => r.StepOrder)
                 .ToList();
 
             var selectedRules = applicableRules //se elige la regla mas especifica respecto al area y al tipo
-                .GroupBy(r => r.StepOrder) //agrupo por el orden de los pasos
+                .GroupBy(r => r.StepOrder) 
                 .Select(g => g 
                     .OrderByDescending(r => (r.AreaId.HasValue ? 1 : 0) + (r.TypeId.HasValue ? 1 : 0)) //priorizo las reglas que tienen area y tipo asignados primero
                     .First()) 
-                .OrderBy(r => r.StepOrder) //vuelvo a ordenar por el orden de los pasos
+                .OrderBy(r => r.StepOrder) 
                 .ToList(); 
 
             if (selectedRules.Count == 0) //si no hay reglas aplicables, lanzo una excepcion
@@ -63,7 +63,7 @@ namespace AprobacionProyectos.Application.Services
                 throw new InvalidOperationException("No se encontraron reglas aplicables.");
             }
 
-            foreach (var rule in selectedRules) //recorro las reglas seleccionadas
+            foreach (var rule in selectedRules) 
             {
 
                 var step = new ProjectApprovalStep  //creo el paso correspondiente a la regla

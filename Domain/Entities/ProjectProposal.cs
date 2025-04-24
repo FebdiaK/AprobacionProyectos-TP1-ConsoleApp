@@ -20,25 +20,25 @@ namespace AprobacionProyectos.Domain.Entities
         public string Description { get; set; } = null!;
 
         [ForeignKey("Area")]
-        public int AreaId { get; set; } // Foreign key del Area
-        public Area Area { get; set; } = null!; // Relación con Area
+        public int AreaId { get; set; } 
+        public Area Area { get; set; } = null!; 
 
         [ForeignKey("Type")]
-        public int TypeId { get; set; } // Foreign key del ProyectType
-        public ProjectType Type { get; set; } = null!; // Relación con ProyectType
+        public int TypeId { get; set; } 
+        public ProjectType Type { get; set; } = null!; 
 
-        public decimal EstimatedAmount { get; set; }  // monto estimado del proyecto
-        public int EstimatedDuration { get; set; }  // en dias segun el tp
+        public decimal EstimatedAmount { get; set; }  
+        public int EstimatedDuration { get; set; }  
 
         [ForeignKey("Status")]
-        public int StatusId { get; set; } // Foreign key del ApprovalStatus
-        public ApprovalStatus Status { get; set; } = null!; // Relación con ApprovalStatus
+        public int StatusId { get; set; } 
+        public ApprovalStatus Status { get; set; } = null!; 
 
         public DateTime CreatedAt { get; set; }
 
         [ForeignKey("CreatedBy")]
-        public int CreatedById { get; set; } // Foreign key del User
-        public User CreatedBy { get; set; } = null!; // Relación con User
+        public int CreatedById { get; set; } 
+        public User CreatedBy { get; set; } = null!; 
 
         public ICollection<ProjectApprovalStep> ApprovalSteps { get; set; } = new List<ProjectApprovalStep>();
 

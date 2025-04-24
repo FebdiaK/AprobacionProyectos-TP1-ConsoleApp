@@ -41,7 +41,7 @@ namespace AprobacionProyectos.Presentation.Helpers
           
                 if (entrada?.ToLower() == "x")
                 {
-                    return null; // Indica que se canceló la operación
+                    return null; // indica que se canceló la operación
                 }
 
                 if (!int.TryParse(entrada, out var _id))
@@ -60,7 +60,7 @@ namespace AprobacionProyectos.Presentation.Helpers
                         continue;
                     }
 
-                    return usuario.Id; // Usuario válido encontrado
+                    return usuario.Id; // usuario válido encontrado
                 }
                 catch
                 {

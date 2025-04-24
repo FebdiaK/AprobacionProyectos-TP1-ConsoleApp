@@ -37,7 +37,7 @@ namespace AprobacionProyectos.Presentation.MenuActions
 
                 var propuesta = await _proposalBuilder.BuildAsync();
 
-                var id = await _creatorService.CreateProjectProposalAsync(propuesta); //esta linea de codio me genera una excepcion:  An error occurred while saving the entity changes. See the inner exception for details.
+                var id = await _creatorService.CreateProjectProposalAsync(propuesta);
 
                 var fullProposal = await _queryService.GetProjectProposalFullWithId(id);
 

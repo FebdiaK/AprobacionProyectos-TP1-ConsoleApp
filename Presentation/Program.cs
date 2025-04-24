@@ -55,7 +55,7 @@ services.AddScoped<CreateProposalAction>();
 services.AddScoped<ViewProposalStatusAction>();
 services.AddScoped<ConsoleMenuService>();
 
-//build y migracion de base de datos si es necesario
+//build y migracion de base de datos 
 ServiceProvider serviceProvider = services.BuildServiceProvider();
 
 using (var scope = serviceProvider.CreateScope())

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace AprobacionProyectos.Infrastructure.Data
 {
-    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
+    public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext> //usado para que no de error al aplicarse automáticamente las migraciones 
     {
         public AppDbContext CreateDbContext(string[] args)
         {

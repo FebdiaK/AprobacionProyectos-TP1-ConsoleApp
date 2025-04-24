@@ -36,8 +36,6 @@ namespace AprobacionProyectos.Application.Services
             if (currentStepIndex == -1 || allSteps.Take(currentStepIndex).Any(s => s.StatusId == 1))
                 return false;
 
-            //step.StatusId = approve ? 2 : 3; // Aprobado = 2, Rechazado = 3
-            //step.StatusId = (await _statusRepository.GetByIdAsync(step.StatusId)).Id;
             var status = await _statusRepository.GetByIdAsync(approve ? 2 : 3);
             step.StatusId = status.Id;
             step.DecisionDate = DateTime.UtcNow;
@@ -48,9 +46,9 @@ namespace AprobacionProyectos.Application.Services
             if (proposal != null)
             {
                 if (!approve)
-                    proposal.StatusId = 3; // Rechazado
+                    proposal.StatusId = 3; // rechazado
                 else if (allSteps.All(s => s.Id == stepId || s.StatusId == 2))
-                    proposal.StatusId = 2; // Aprobado
+                    proposal.StatusId = 2; // aprobado
             }
 
             await _context.SaveChangesAsync();

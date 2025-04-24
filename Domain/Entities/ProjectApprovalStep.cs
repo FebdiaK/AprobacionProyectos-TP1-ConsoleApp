@@ -11,40 +11,40 @@ namespace AprobacionProyectos.Domain.Entities
     public class ProjectApprovalStep
     {
         [Key]
-        public long Id { get; set; } // bigint en C# es un long
+        public long Id { get; set; }
 
 
         [ForeignKey(nameof(ProjectProposal))]
-        public Guid ProjectProposalId { get; set; } // Foreign key del ProjectProposal
-        public ProjectProposal ProjectProposal { get; set; } = null!; // relacion con ProjectProposal
+        public Guid ProjectProposalId { get; set; } 
+        public ProjectProposal ProjectProposal { get; set; } = null!; 
 
 
         [ForeignKey (nameof(ApproverUser))]
-        [Column("ApproverUserId")] // especifico el nombre de la columna en la base de datos
-        public int? ApproverUserId { get; set; } // Foreign key del User, puede ser null 
-        public User? ApproverUser { get; set; } // relacion con User, puede ser null 
+        [Column("ApproverUserId")] 
+        public int? ApproverUserId { get; set; }  
+        public User? ApproverUser { get; set; } 
 
 
         [ForeignKey(nameof(ApproverRole))]
-        [Column("ApproverRoleId")] // especifico el nombre de la columna en la base de datos
-        public int ApproverRoleId { get; set; } // Foreign key del ApproverRole
-        public ApproverRole ApproverRole { get; set; } = null!; // relacion con ApproverRole
+        [Column("ApproverRoleId")] 
+        public int ApproverRoleId { get; set; } 
+        public ApproverRole ApproverRole { get; set; } = null!;
 
 
         [ForeignKey(nameof(Status))]
-        [Column("Status")] // especifico el nombre de la columna en la base de datos
-        public int StatusId { get; set; }  // Foreign key del ApprovalStatus
-        public ApprovalStatus Status { get; set; } = null!; // relacion con ApprovalStatus
+        [Column("Status")] 
+        public int StatusId { get; set; }  
+        public ApprovalStatus Status { get; set; } = null!; 
 
 
-        public required int StepOrder { get; set; } // orden del paso de aprobacion
+        public required int StepOrder { get; set; } 
         
         
-        public DateTime? DecisionDate { get; set; } // fecha de creacion del paso de aprobacion
+        public DateTime? DecisionDate { get; set; } 
 
 
         [Column(TypeName = "varchar(max)")]
-        public string? Observations { get; set; } // observaciones del paso de aprobacion
+        public string? Observations { get; set; } 
 
     }
 }

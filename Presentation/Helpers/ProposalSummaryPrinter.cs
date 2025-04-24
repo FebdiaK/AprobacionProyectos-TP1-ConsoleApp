@@ -52,7 +52,6 @@ namespace AprobacionProyectos.Presentation.Helpers
             var steps = await _projectProposalQueryService.GetApprovalStepsByProposalIdAsync(proposal.Id);
 
             foreach (var step in steps.OrderBy(s => s.StepOrder))
-            //foreach (var step in proposal.ApprovalSteps.OrderBy(s => s.StepOrder))
             {
                 var estado = await _approvalStatusService.GetApprovalStatusByIdAsync(step.StatusId);
                 

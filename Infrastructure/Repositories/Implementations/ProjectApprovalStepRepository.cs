@@ -33,7 +33,6 @@ namespace AprobacionProyectos.Infrastructure.Repositories.Implementations
         {
             return await _context.ProjectApprovalSteps
                 .Where(s => s.ProjectProposalId == proposalId)
-                //.OrderBy(s => s.StepOrder)//.Include(s => s.ApproverRole).ThenInclude(r => r.ApprovalRules).ThenInclude(r => r.StepOrder)
                 .ToListAsync();
         }
     }

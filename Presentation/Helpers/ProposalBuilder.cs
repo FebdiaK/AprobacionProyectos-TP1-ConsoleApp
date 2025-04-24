@@ -42,12 +42,13 @@ namespace AprobacionProyectos.Presentation.Helpers
 
             var titulo = LeerEntrada(" Título del proyecto: ", entrada => !string.IsNullOrWhiteSpace(entrada));
             var descripcion = LeerEntrada(" Descripción: ", entrada => !string.IsNullOrWhiteSpace(entrada));
-            //var areaId = int.Parse(LeerEntrada(" ID del Área (1-4): ", entrada => InputValidators.ValidarRango(entrada, 1, 4))); //deberia hacer que se valide en base a las cantidad de areas que hay en la tabla de la db:
+           
             var areas = await _areaService.GetAllAreasAsync();
-            var areaId = int.Parse(LeerEntrada(" ID del Área (1-" + areas.Count + "): ", entrada => InputValidators.ValidarRango(entrada, 1, areas.Count())));
-            //var tipoId = int.Parse(LeerEntrada(" ID del Tipo de Proyecto (1-4): ", entrada => InputValidators.ValidarRango(entrada, 1, 4))); //de igual forma acá
+            var areaId = int.Parse(LeerEntrada(" ID del Área (1-" + areas.Count + "): ", entrada => InputValidators.ValidarRango(entrada, 1, areas.Count()))); //se valida el rango de areas dinámicamente 
+            
             var tipos = await _projectTypeService.GetAllProjectTypesAsync();
             var tipoId = int.Parse(LeerEntrada(" ID del Tipo de Proyecto (1-" + tipos.Count + "): ", entrada => InputValidators.ValidarRango(entrada, 1, tipos.Count())));
+
             var monto = decimal.Parse(LeerEntrada(" Monto estimado (en USD): ", entrada => InputValidators.ValidarDecimalPositivo(entrada)));
             var duracion = int.Parse(LeerEntrada(" Duración estimada (días): ", entrada => InputValidators.ValidarEnteroPositivo(entrada)));
             var creadorId = await _inputValidators.LeerYValidarUsuarioAsync();
