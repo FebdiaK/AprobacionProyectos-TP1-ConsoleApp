@@ -46,7 +46,7 @@ services.AddScoped<IUserService, UserService>();
 services.AddScoped<ApprovalConfirmationHelper>();
 services.AddScoped<InputValidators>();
 services.AddScoped<ProjectSelecionFromListHelper>();
-services.AddScoped<ProjectSelectionHelper>();
+services.AddScoped<ProjectPendingSelectionHelper>();
 services.AddScoped<ProposalBuilder>();
 services.AddScoped<ProposalSummaryPrinter>();
 services.AddScoped<UserValidationHelper>();

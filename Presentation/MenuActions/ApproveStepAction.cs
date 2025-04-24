@@ -29,7 +29,7 @@ namespace AprobacionProyectos.Presentation.MenuActions
                 Console.WriteLine("===== APROBAR / RECHAZAR PASO =====");
 
                 var propuestas = await _projectProposalQueryService.GetAllProjectProposalsAsync();
-                var propuesta = ProjectSelectionHelper.SelectProposal(propuestas);
+                var propuesta = ProjectPendingSelectionHelper.SelectProposalPending(propuestas);
                 if (propuesta == null)
                     return;
 

@@ -7,11 +7,11 @@ using AprobacionProyectos.Domain.Entities;
 
 namespace AprobacionProyectos.Presentation.Helpers
 {
-    public class ProjectSelectionHelper
+    public class ProjectPendingSelectionHelper
     {
-        public static ProjectProposal SelectProposal(List<ProjectProposal> propuestas)
+        public static ProjectProposal SelectProposalPending(List<ProjectProposal> propuestas)
         {
-            var pendientes = propuestas.Where(p => p.StatusId == 1).ToList();
+            var pendientes = propuestas.Where(p => p.StatusId == 1).ToList(); // obtenemos las propuestas pendientes
 
             if (pendientes.Count == 0)
             {
